@@ -1,0 +1,74 @@
+﻿@model IEnumerable<RandoPages.Models.FlashCard>
+
+@{
+    ViewBag.Title = "Flash Cards";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Flash Cards</h2>
+
+<p>
+    @Html.ActionLink("Create New Card", "Create") |
+    @Html.ActionLink("Study All Cards", "StudyCards")
+</p>
+
+@using (Html.BeginForm("StudyCards", "FlashCard", FormMethod.Get))
+{
+    <p class="rdoOptions">
+        Choose a category to study:<br />
+        @foreach (var item in Model.Select(x => x.CardType).Distinct())
+        {
+            var type = item.ToString();
+            <input type="radio" id="@type" name="questionType" value="@type" />
+            <label for="@type">@type</label>
+        }
+        <input type="submit" value="Study These Cards" />
+    </p>
+}
+<br />
+
+@using (Html.BeginForm())
+{
+    <p>
+        Find by Category: @Html.TextBox("searchString")
+        <input type="submit" value="Search" />
+    </p>
+}
+
+<table class="table mytbl">
+    <tr>
+        <th>
+            Category
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Question)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Answer)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CardType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Question)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Answer)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", new { id = item.CardId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.CardId }) | 
+                @Html.ActionLink("Edit", "Edit", new { id = item.CardId })
+            </td>
+        </tr>
+    }
+</table>
+
+@section Styles{
+    <link href="~/Content/MyStyleSheet.css" rel="stylesheet" type="text/css" />
+}

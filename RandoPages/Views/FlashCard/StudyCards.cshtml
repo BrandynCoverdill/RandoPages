@@ -1,0 +1,33 @@
+﻿@model IEnumerable<RandoPages.Models.FlashCard>
+
+@{
+    ViewBag.Title = "Study Cards";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Study Cards</h2>
+
+<p>
+    @Html.ActionLink("Return to List", "Index")
+</p>
+
+<section>
+    @{ 
+        var count = 0;
+    }
+    @foreach (var item in Model)
+    {
+        count++;
+
+        <h4>@count) @Html.DisplayFor(Model => item.Question)</h4>
+        <textarea wrap="hard" rows="5" cols="50"></textarea>
+        <br />
+        <p style="font-size: 15px; color: red;" class="answerVisibility">Answer: @Html.DisplayFor(Model => item.Answer)</p>
+        <br />
+    }
+    <button class="btn-primary btn" id="btnShowAnswers" onclick="showAnswer()">Show All Answers</button>
+</section>
+
+@section Scripts {
+    <script src="~/Scripts/flashCardScript.js" type="text/javascript"></script>
+}
