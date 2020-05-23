@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using RandoPages.Data;
 using RandoPages.Models;
 using PagedList;
+using PagedList.Mvc;
 
 namespace RandoPages.Controllers
 {
@@ -17,8 +18,19 @@ namespace RandoPages.Controllers
         private RandoPagesContext db = new RandoPagesContext();
 
         // GET: FlashCard
-        public ActionResult Index(string searchString)
+        public ActionResult Index(string searchString, int? page, string currentFilter)
         {
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewBag.CurrentFilter = searchString;
+
             var flashCards = from f in db.FlashCards select f; // Select all flashCards
 
             // Ability to search through a list of questions.
@@ -27,7 +39,10 @@ namespace RandoPages.Controllers
                 flashCards = flashCards.Where(f => f.CardType.Contains(searchString));
             }
 
-            return View(flashCards.ToList());
+            // Getting a list of each Card Category: Will do later to fix
+            ViewBag.Card = new SelectList(db.FlashCards.Select(c => c.CardType).Distinct(), "Card", "Card");
+
+            return View(flashCards.OrderBy(f => f.CardType).ToPagedList(page ?? 1, 3));
         }
 
         // GET: FlashCard/Details/5

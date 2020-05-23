@@ -1,4 +1,6 @@
-﻿@model IEnumerable<RandoPages.Models.FlashCard>
+﻿@model IPagedList<RandoPages.Models.FlashCard>
+@using PagedList.Mvc;
+@using PagedList;
 
 @{
     ViewBag.Title = "Flash Cards";
@@ -29,7 +31,7 @@
 @using (Html.BeginForm())
 {
     <p>
-        Find by Category: @Html.TextBox("searchString")
+        Find by Category: @Html.TextBox("searchString", ViewBag.CurrentFilter as string)
         <input type="submit" value="Search" />
     </p>
 }
@@ -40,10 +42,10 @@
             Category
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Question)
+            @Html.DisplayNameFor(model => model.First().Question)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Answer)
+            @Html.DisplayNameFor(model => model.First().Answer)
         </th>
         <th></th>
     </tr>
@@ -72,3 +74,5 @@
 @section Styles{
     <link href="~/Content/MyStyleSheet.css" rel="stylesheet" type="text/css" />
 }
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, currentFilter = ViewBag.CurrentFilter }))
